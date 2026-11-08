@@ -1,0 +1,4 @@
+Name       = Game Patcher
+Version    = 1.1.1
+Essentials = 21.1,21.99,22
+Credits    = Nononever

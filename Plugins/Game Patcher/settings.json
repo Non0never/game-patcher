@@ -1,0 +1,15 @@
+{
+  "repository": "OWNER/REPOSITORY",
+  "assets": {
+    "linux": "game-linux.zip",
+    "windows": "game-windows.zip"
+  },
+  "initial_version": "0.1.0",
+  "game_files": {
+    "linux": "auto",
+    "windows": "auto"
+  },
+  "backup_folder": "GamePatcher",
+  "auto_check": true,
+  "title": "My Game"
+}

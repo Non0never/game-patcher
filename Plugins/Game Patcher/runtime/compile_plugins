@@ -1,0 +1,37 @@
+require 'zlib'
+
+sources = Dir['Data/Scripts/**/*.rb'].map { |path| [path, File.read(path, :encoding => 'UTF-8')] }
+if sources.empty?
+  sources = Marshal.load(File.binread('Data/Scripts.rxdata')).map do |entry|
+    [entry[1], Zlib::Inflate.inflate(entry[2]).force_encoding(Encoding::UTF_8)]
+  end
+end
+
+# Use the game's own metadata reader and dependency ordering.
+['def self.get(dir, filters', 'def pbCompilerEachPreppedLine(', 'module PluginManager'].each do |signature|
+  source = sources.find { |name, code| code.include?(signature) }
+  raise "Essentials compiler component missing: #{signature}" if !source
+  eval(source[1], TOPLEVEL_BINDING, source[0])
+end
+
+module Console
+  def self.method_missing(name, *args); end
+end
+
+class Array
+  def swap(first, second)
+    a, b = index(first), index(second)
+    self[a], self[b] = self[b], self[a]
+  end
+end
+
+module PluginManager
+  def self.error(message)
+    raise message
+  end
+end
+
+$DEBUG = true
+order, plugins = PluginManager.getPluginOrder
+PluginManager.compilePlugins(order, plugins)
+puts "Compiled #{order.length} plugins into Data/PluginScripts.rxdata"
